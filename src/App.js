@@ -1,11 +1,17 @@
 import logo from './logo.svg';
+import {useState} from "react";
 import './App.css';
 
 function App() {
+  var [value, setValue] = useState();
 
+  function callConsole() {
+    console.log(" exact value : ", value)
 
-  function callConsole(event) {
-    console.log(" exact value : ", event.target.value)
+  }
+
+  function handleOnChange(event) {
+    setValue(event.target.value)
   }
 
   return (
@@ -42,10 +48,10 @@ function App() {
           </div>
           <div class="mb-3">
             <label for="forInputCaption" class="form-label">Your Image Caption</label>
-            <input type="text" class="form-control" id="forInputCaption" placeholder="Write your image caption" onChange={callConsole} />
+            <input type="text" class="form-control" id="forInputCaption" placeholder="Write your image caption" onChange={handleOnChange} />
           </div>
           <div class="col-12">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" onClick={callConsole}>Submit</button>
           </div>
         </form>
       </main>
