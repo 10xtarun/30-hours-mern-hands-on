@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import {useState} from "react";
 import './App.css';
+import Trial from './components/trial';
 
 function App() {
   var [value, setValue] = useState();
@@ -56,6 +57,7 @@ function App() {
         </form>
       </main>
 
+        <Trial appValue={value} />
       <footer>
         <nav class="navbar fixed-bottom bg-body-tertiary">
           <div class="container-fluid">
