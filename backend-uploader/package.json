@@ -15,6 +15,9 @@
   "author": "Tarun Singh",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.3"
+    "express": "^4.18.3",
+    "mongodb": "^6.4.0",
+    "mongoose": "^8.2.0",
+    "nodemon": "^3.1.0"
   }
 }

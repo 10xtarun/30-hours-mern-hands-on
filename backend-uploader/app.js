@@ -1,4 +1,7 @@
 const express = require("express")
+// const mongodb = require("mongodb")
+const mongoose = require("mongoose")
+const SuperHeroModel = require("./models/superheroes")
 
 const app = express()
 
@@ -6,11 +9,29 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// MongoDB Connection
+const MongoDBURI = "" // put your own URI with correct password and username
+// const dbClient = new mongodb.MongoClient(MongoDBURI)
+
+const dbClient = mongoose.connect(MongoDBURI, {})
+.then(function(data) {
+    console.log("MongoDB Connection Established.")
+    return data
+})
+.catch(function(error) {
+    console.log("MongoDB Connection Failed.", error)
+})
+
+// dbClient.on("connectionReady", function() {
+//     console.log("MongoDB Connection Created.")
+//     console.log(dbClient.db("metahumans").collections())
+// })
+
 function customLogger(method, path, params, query, body) {
     console.log(" New Request Details: ", method, path, params, query, body)
 }
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     customLogger(req.method, req.path, req.params, req.query, req.body)
     next()
 })
@@ -34,28 +55,43 @@ app.get("/", function (req, res) {
 })
 
 app.get("/superhero", function (req, res) {
-    return res.send(arrayDB)
+    const heroes = dbClient.db("metahumans").collection("superheroes").find({}).toArray()
+
+    return heroes
+        .then(function (data) {
+            return res.send(data)
+        })
+    // return res.send(heroes)
 })
 
 app.get("/superhero/:name", function (req, res) {
-    const name = req.params.name
-    console.log("---------- ", name)
+    const alterName = req.params.name
+    const heroes = dbClient.db("metahumans").collection("superheroes").findOne({ alterName: alterName })
 
-    let obj1 = {}
-
-    arrayDB.map(function (hero) {
-        if (hero.name === name) {
-            obj1 = hero
-        }
+    return heroes
+    .then(function(data){
+        return res.send(data)
     })
-
-    return res.send(obj1)
 })
 
 app.post("/superhero", function (req, res) {
-    console.log("---- req body ---- ", req.body)
-    arrayDB.push(req.body)
-    res.send("Superhero successfully created.")
+    // console.log("---- req body ---- ", req.body)
+    // arrayDB.push(req.body)
+
+    // const insertOperation = dbClient.db("metahumans").collection("superheroes").insertOne(req.body)
+    // return insertOperation
+    // .then(function(data){
+    //     return res.send("Superhero successfully created." + data.acknowledged)
+    // })
+
+    SuperHeroModel.create(req.body)
+    .then(function(data){
+        return res.send(data)
+    })
+    .catch(function(error){
+        return res.send(error)
+    })
+    
 })
 
 
