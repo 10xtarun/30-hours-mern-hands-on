@@ -3,17 +3,43 @@ import { useState } from "react";
 import './App.css';
 import Trial from './components/trial';
 import Gallery from './components/Gallery';
+import axios from "axios"
 
 function App() {
-  var [value, setValue] = useState();
+  var [alterName, setAlterName] = useState("");
+  var [name, setName] = useState("");
+  var [imageFile, setImageFile] = useState(null);
 
-  function callConsole() {
-    console.log(" exact value : ", value)
-
+  function handleOnChangeForAlterName(event) {
+    setAlterName(event.target.value)
   }
 
-  function handleOnChange(event) {
-    setValue(event.target.value)
+  function handleOnChangeForName(event) {
+    setName(event.target.value)
+  }
+
+  function handleOnChangeForImage(event) {
+    setImageFile(event.target.files[0])
+  }
+
+  function handleOnSubmit(event) {
+    event.preventDefault()
+
+
+    const data = new FormData()
+    data.append("name", name)
+    data.append("alterName", alterName)
+    data.append("myimage", imageFile)
+
+    axios.post("http://localhost:8000/superhero", data, { headers: "multipart/form-data" })
+      .then(function (response) {
+        console.log("------- ", response.data)
+        alert(data)
+      })
+      .catch(function (error) {
+        console.log("xxxxxxxxxxx ", error)
+        alert(error)
+      })
   }
 
   return (
@@ -45,15 +71,19 @@ function App() {
       <main>
         <form className="m-3 p-3">
           <div className="mb-3">
-            <label for="formInputImage" className="form-label">Add Your Image</label>
-            <input type="file" className="form-control" id="formInputImage" placeholder="Upload your image here" />
+            <label for="formInputImage" className="form-label">Add Your Superhero Image</label>
+            <input type="file" className="form-control" id="formInputImage" placeholder="Upload your image here" onChange={handleOnChangeForImage}/>
           </div>
           <div className="mb-3">
-            <label for="forInputCaption" className="form-label">Your Image Caption</label>
-            <input type="text" className="form-control" id="forInputCaption" placeholder="Write your image caption" onChange={handleOnChange} />
+            <label for="forAlterName" className="form-label">Alter Name</label>
+            <input type="text" className="form-control" id="forAlterName" placeholder="...Batman" onChange={handleOnChangeForAlterName} />
+          </div>
+          <div className="mb-3">
+            <label for="forName" className="form-label">Name</label>
+            <input type="text" className="form-control" id="forName" placeholder="...Bruce Wayne" onChange={handleOnChangeForName} />
           </div>
           <div className="col-12">
-            <button type="submit" className="btn btn-primary" onClick={callConsole}>Submit</button>
+            <button type="submit" className="btn btn-primary" onClick={handleOnSubmit}>Submit</button>
           </div>
         </form>
       </main>

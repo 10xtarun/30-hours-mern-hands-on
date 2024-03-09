@@ -98,7 +98,7 @@ const uploader = multer({
 
 app.post("/superhero", uploader.single("myimage"), function (req, res) {
 
-    console.log("------------------- ", req.file)
+    console.log("------------------- ", req.body, req.file)
     const newSuperHero = {
         name: req.body.name,
         alterName: req.body.alterName,
